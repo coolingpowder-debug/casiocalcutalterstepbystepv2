@@ -19,14 +19,14 @@
             padding: 20px;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-            width: 360px;
+            width: 370px;
             border: 2px solid #444;
         }
         .brand {
             color: #d4af37;
             font-size: 13px;
             font-weight: bold;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
             letter-spacing: 1px;
         }
         .model {
@@ -42,14 +42,14 @@
             font-family: 'Courier New', Courier, monospace;
             margin-bottom: 15px;
             border: 2px inset #666;
-            min-height: 45px;
+            min-height: 50px;
         }
         .history {
             font-size: 12px;
             color: #444;
             overflow-x: auto;
             white-space: nowrap;
-            height: 16px;
+            height: 18px;
         }
         .result {
             font-size: 22px;
@@ -64,8 +64,8 @@
             gap: 6px;
         }
         button {
-            padding: 10px 4px;
-            font-size: 13px;
+            padding: 10px 2px;
+            font-size: 12px;
             cursor: pointer;
             border: none;
             border-radius: 4px;
@@ -77,7 +77,7 @@
         button:active { background: #b0b0b0; }
         .btn-shift { background: #d4af37; color: #fff; }
         .btn-alpha { background: #cc3333; color: #fff; }
-        .btn-mode { background: #dcdcdc; font-size: 11px; }
+        .btn-mode { background: #dcdcdc; font-size: 10px; }
         .btn-op { background: #555555; color: #fff; }
         .btn-action { background: #b85c37; color: #fff; }
         .btn-equals { background: #2e7d32; color: #fff; }
@@ -87,116 +87,141 @@
 
 <div class="calculator">
     <div class="brand">CASIO</div>
-    <div class="model">fx-991ES Plus (Web Simulator)</div>
+    <div class="model">fx-991ES Plus Simulator</div>
     
     <div class="display">
-        <div id="history" class="history"></div>
+        <div id="history" class="history">0</div>
         <div id="result" class="result">0</div>
     </div>
     
     <div class="buttons">
-        <!--แถวที่ 1-->
-        <button class="btn-shift" onclick="alert('Shift Mode')">SHIFT</button>
-        <button class="btn-alpha" onclick="alert('Alpha Mode')">ALPHA</button>
-        <button class="btn-mode" onclick="appendValue('Math')">MODE</button>
+        <!-- แถวที่ 1 -->
+        <button class="btn-shift" onclick="appendInput('SHIFT(')">SHIFT</button>
+        <button class="btn-alpha" onclick="appendInput('ALPHA(')">ALPHA</button>
+        <button class="btn-mode" onclick="clearAll()">MODE</button>
         <button class="btn-action" onclick="clearAll()">AC</button>
         <button class="btn-action" onclick="deleteChar()">DEL</button>
         
-        <!--แถวที่ 2-->
-        <button class="btn-op" onclick="appendFunc('Math.sin(')">sin</button>
-        <button class="btn-op" onclick="appendFunc('Math.cos(')">cos</button>
-        <button class="btn-op" onclick="appendFunc('Math.tan(')">tan</button>
-        <button class="btn-op" onclick="appendValue('^')">x^y</button>
-        <button class="btn-op" onclick="appendValue('Math.sqrt(')">√</button>
+        <!-- แถวที่ 2 -->
+        <button class="btn-op" onclick="appendInput('sin(')">sin</button>
+        <button class="btn-op" onclick="appendInput('cos(')">cos</button>
+        <button class="btn-op" onclick="appendInput('tan(')">tan</button>
+        <button class="btn-op" onclick="appendInput('^')">x^y</button>
+        <button class="btn-op" onclick="appendInput('sqrt(')">√</button>
         
-        <!--แถวที่ 3-->
-        <button class="btn-op" onclick="appendValue('Math.log10(')">log</button>
-        <button class="btn-op" onclick="appendValue('Math.log(')">ln</button>
-        <button class="btn-op" onclick="appendValue('(')">(</button>
-        <button class="btn-op" onclick="appendValue(')')">)</button>
-        <button class="btn-op" onclick="appendValue('/')">÷</button>
+        <!-- แถวที่ 3 -->
+        <button class="btn-op" onclick="appendInput('log(')">log</button>
+        <button class="btn-op" onclick="appendInput('ln(')">ln</button>
+        <button class="btn-op" onclick="appendInput('(')">(</button>
+        <button class="btn-op" onclick="appendInput(')')">)</button>
+        <button class="btn-op" onclick="appendInput('/')">÷</button>
         
-        <!--แถวที่ 4-->
-        <button onclick="appendValue('7')">7</button>
-        <button onclick="appendValue('8')">8</button>
-        <button onclick="appendValue('9')">9</button>
-        <button class="btn-op" onclick="appendValue('*')">×</button>
-        <button class="btn-op" onclick="appendValue('Math.PI')">π</button>
+        <!-- แถวที่ 4 -->
+        <button onclick="appendInput('7')">7</button>
+        <button onclick="appendInput('8')">8</button>
+        <button onclick="appendInput('9')">9</button>
+        <button class="btn-op" onclick="appendInput('*')">×</button>
+        <button class="btn-op" onclick="appendInput('PI')">π</button>
         
-        <!--แถวที่ 5-->
-        <button onclick="appendValue('4')">4</button>
-        <button onclick="appendValue('5')">5</button>
-        <button onclick="appendValue('6')">6</button>
-        <button class="btn-op" onclick="appendValue('-')">-</button>
-        <button class="btn-op" onclick="appendValue('Math.E')">e</button>
+        <!-- แถวที่ 5 -->
+        <button onclick="appendInput('4')">4</button>
+        <button onclick="appendInput('5')">5</button>
+        <button onclick="appendInput('6')">6</button>
+        <button class="btn-op" onclick="appendInput('-')">-</button>
+        <button class="btn-op" onclick="appendInput('E')">e</button>
         
-        <!--แถวที่ 6-->
-        <button onclick="appendValue('1')">1</button>
-        <button onclick="appendValue('2')">2</button>
-        <button onclick="appendValue('3')">3</button>
-        <button class="btn-op" onclick="appendValue('+')">+</button>
+        <!-- แถวที่ 6 -->
+        <button onclick="appendInput('1')">1</button>
+        <button onclick="appendInput('2')">2</button>
+        <button onclick="appendInput('3')">3</button>
+        <button class="btn-op" onclick="appendInput('+')">+</button>
         <button class="btn-equals" onclick="calculate()" style="grid-row: span 2; height: 100%;">=</button>
         
-        <!--แถวที่ 7-->
-        <button onclick="appendValue('0')" style="grid-column: span 2;">0</button>
-        <button onclick="appendValue('.')">.</button>
-        <button class="btn-op" onclick="appendValue('ans')">Ans</button>
+        <!-- แถวที่ 7 -->
+        <button onclick="appendInput('0')" style="grid-column: span 2;">0</button>
+        <button onclick="appendInput('.')">.</button>
+        <button class="btn-op" onclick="appendInput('ans')">Ans</button>
     </div>
 </div>
 
 <script>
-    let currentInput = '0';
-    let historyInput = '';
+    let currentExpression = '0';
     let lastAns = 0;
+    let isCalculated = false;
 
     function updateDisplay() {
-        document.getElementById('result').innerText = currentInput;
-        document.getElementById('history').innerText = historyInput;
+        document.getElementById('result').innerText = currentExpression;
     }
 
-    function appendValue(val) {
-        if (val === 'ans') val = lastAns;
-        if (currentInput === '0' && typeof val === 'string' && !isNaN(val)) {
-            currentInput = val;
+    function appendInput(val) {
+        if (isCalculated) {
+            if (!isNaN(val) || val === '(' || val === 'sin(' || val === 'cos(' || val === 'tan(' || val === 'sqrt(' || val === 'log(' || val === 'ln(') {
+                currentExpression = '';
+            }
+            isCalculated = false;
+        }
+
+        if (currentExpression === '0' && !isNaN(val)) {
+            currentExpression = val;
         } else {
-            if (currentInput === '0') currentInput = '';
-            currentInput += val;
+            if (currentExpression === '0') currentExpression = '';
+            currentExpression += val;
         }
         updateDisplay();
     }
 
-    function appendFunc(func) {
-        if (currentInput === '0') currentInput = '';
-        currentInput += func;
-        updateDisplay();
-    }
-
     function clearAll() {
-        currentInput = '0';
-        historyInput = '';
+        currentExpression = '0';
+        document.getElementById('history').innerText = '0';
         updateDisplay();
     }
 
     function deleteChar() {
-        if (currentInput.length > 1) {
-            currentInput = currentInput.slice(0, -1);
+        if (currentExpression.length > 1) {
+            currentExpression = currentExpression.slice(0, -1);
         } else {
-            currentInput = '0';
+            currentExpression = '0';
         }
         updateDisplay();
     }
 
     function calculate() {
         try {
-            historyInput = currentInput;
-            // แปลงสัญลักษณ์ให้ JavaScript คำนวณได้
-            let exp = currentInput.replace(/×/g, '*').replace(/÷/g, '/').replace(/\^/g, '**');
-            let res = eval(exp);
-            lastAns = res;
-            currentInput = String(res);
+            let expr = currentExpression;
+            document.getElementById('history').innerText = expr;
+
+            // แทนค่าคงที่และแปลงฟังก์ชันให้อยู่ในรูปที่ JavaScript คำนวณได้จริง
+            expr = expr.replace(/PI/g, 'Math.PI')
+                       .replace(/E/g, 'Math.E')
+                       .replace(/ans/g, lastAns)
+                       .replace(/×/g, '*')
+                       .replace(/÷/g, '/')
+                       .replace(/\^/g, '**');
+
+            // แปลงองศาเป็นเรเดียนให้ฟังก์ชันตรีโกณมิติทำงานเหมือนเครื่องคิดเลขจริง
+            expr = expr.replace(/sin\(/g, 'Math.sin((Math.PI/180)*')
+                       .replace(/cos\(/g, 'Math.cos((Math.PI/180)*')
+                       .replace(/tan\(/g, 'Math.tan((Math.PI/180)*');
+
+            // แปลงฟังก์ชันอื่นๆ
+            expr = expr.replace(/sqrt\(/g, 'Math.sqrt(')
+                       .replace(/log\(/g, 'Math.log10(')
+                       .replace(/ln\(/g, 'Math.log(');
+
+            let result = eval(expr);
+            
+            // ปัดเศษทศนิยมไม่ให้เกินจำเป็นเหมือนเครื่องคิดเลขจริง
+            if (typeof result === 'number' && !Number.isInteger(result)) {
+                result = parseFloat(result.toFixed(10));
+            }
+
+            lastAns = result;
+            currentExpression = String(result);
+            isCalculated = true;
             updateDisplay();
         } catch (error) {
-            currentInput = 'Syntax Error';
+            currentExpression = 'Math Error';
+            isCalculated = true;
             updateDisplay();
         }
     }
