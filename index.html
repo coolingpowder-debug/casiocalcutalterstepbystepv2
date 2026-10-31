@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Casio fx-991 Mode Calculator Step-by-Step</title>
+    <title>Casio fx-991 Complete Simulator & Step-by-Step</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -23,10 +23,11 @@
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
             border: 2px solid #444;
-            width: 700px;
         }
-        .calculator-panel {
-            flex: 1;
+        /* แผงเครื่องคิดเลขหลัก */
+        .calculator {
+            width: 320px;
+            background: #202020;
         }
         .brand {
             color: #d4af37;
@@ -38,243 +39,317 @@
         .model {
             color: #aaa;
             font-size: 11px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
-        .form-group {
-            margin-bottom: 12px;
-        }
-        label {
-            display: block;
-            font-size: 13px;
-            margin-bottom: 5px;
-            color: #ff9800;
-        }
-        select, input {
-            width: 100%;
-            padding: 10px;
-            font-size: 14px;
-            border-radius: 4px;
-            border: 1px solid #555;
-            background: #2a2a2a;
-            color: #fff;
-            box-sizing: border-box;
-        }
-        .btn-calc {
-            width: 100%;
-            padding: 12px;
-            font-size: 15px;
-            font-weight: bold;
-            background: #2e7d32;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .btn-calc:hover {
-            background: #388e3c;
-        }
-        .result-box {
+        .display {
             background: #c8d6af;
-            color: #000;
-            padding: 12px;
+            padding: 10px;
             border-radius: 4px;
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 15px;
             text-align: right;
             font-family: 'Courier New', Courier, monospace;
+            margin-bottom: 12px;
+            border: 2px inset #666;
+            min-height: 45px;
+            color: #000;
         }
-        /* แท็บแสดงวิธีทำด้านข้าง */
-        .steps-sidebar {
-            width: 320px;
+        .history {
+            font-size: 11px;
+            color: #444;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        .result {
+            font-size: 20px;
+            font-weight: bold;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+        }
+        button {
+            padding: 8px 2px;
+            font-size: 11px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            background: #e0e0e0;
+            transition: 0.1s;
+            font-weight: bold;
+            color: #111;
+        }
+        button:active { background: #b0b0b0; }
+        .btn-shift { background: #d4af37; color: #fff; }
+        .btn-alpha { background: #cc3333; color: #fff; }
+        .btn-mode { background: #dcdcdc; font-size: 9px; }
+        .btn-op { background: #555555; color: #fff; }
+        .btn-action { background: #b85c37; color: #fff; }
+        .btn-equals { background: #2e7d32; color: #fff; }
+
+        /* แผงโหมดพิเศษและวิธีทำด้านข้าง */
+        .sidebar {
+            width: 300px;
             background: #2a2a2a;
             border: 1px solid #444;
             border-radius: 8px;
             padding: 15px;
             display: flex;
             flex-direction: column;
+            gap: 12px;
         }
-        .steps-sidebar h3 {
-            font-size: 14px;
+        .sidebar h3 {
+            font-size: 13px;
             color: #d4af37;
-            margin-top: 0;
+            margin: 0;
             border-bottom: 1px solid #444;
-            padding-bottom: 8px;
+            padding-bottom: 6px;
+        }
+        .form-group {
+            font-size: 12px;
+        }
+        label {
+            display: block;
+            margin-bottom: 4px;
+            color: #ff9800;
+        }
+        select, input {
+            width: 100%;
+            padding: 8px;
+            font-size: 12px;
+            border-radius: 4px;
+            border: 1px solid #555;
+            background: #1a1a1a;
+            color: #fff;
+            box-sizing: border-box;
+        }
+        .btn-calc-mode {
+            width: 100%;
+            padding: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            background: #2e7d32;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
         }
         .steps-content {
-            font-size: 13px;
-            line-height: 1.6;
+            font-size: 11px;
+            line-height: 1.4;
             color: #ddd;
             overflow-y: auto;
-            max-height: 360px;
+            max-height: 180px;
             white-space: pre-line;
             font-family: 'Courier New', Courier, monospace;
+            background: #1a1a1a;
+            padding: 8px;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
 
 <div class="main-container">
-    <!-- แผงควบคุมและเลือกโหมด -->
-    <div class="calculator-panel">
+    <!-- 1. แผงเครื่องคิดเลขหลัก (กดคำนวณทั่วไป) -->
+    <div class="calculator">
         <div class="brand">CASIO</div>
-        <div class="model">fx-991ES Plus - Multi-Mode Simulator</div>
+        <div class="model">fx-991ES Plus</div>
         
+        <div class="display">
+            <div id="calcHistory" class="history">0</div>
+            <div id="calcResult" class="result">0</div>
+        </div>
+        
+        <div class="buttons">
+            <button class="btn-shift" onclick="appendInput('SHIFT(')">SHIFT</button>
+            <button class="btn-alpha" onclick="appendInput('ALPHA(')">ALPHA</button>
+            <button class="btn-mode" onclick="clearCalc()">MODE</button>
+            <button class="btn-action" onclick="clearCalc()">AC</button>
+            <button class="btn-action" onclick="deleteChar()">DEL</button>
+            
+            <button class="btn-op" onclick="appendInput('sin(')">sin</button>
+            <button class="btn-op" onclick="appendInput('cos(')">cos</button>
+            <button class="btn-op" onclick="appendInput('tan(')">tan</button>
+            <button class="btn-op" onclick="appendInput('^')">x^y</button>
+            <button class="btn-op" onclick="appendInput('sqrt(')">√</button>
+            
+            <button class="btn-op" onclick="appendInput('log(')">log</button>
+            <button class="btn-op" onclick="appendInput('ln(')">ln</button>
+            <button class="btn-op" onclick="appendInput('(')">(</button>
+            <button class="btn-op" onclick="appendInput(')')">)</button>
+            <button class="btn-op" onclick="appendInput('/')">÷</button>
+            
+            <button onclick="appendInput('7')">7</button>
+            <button onclick="appendInput('8')">8</button>
+            <button onclick="appendInput('9')">9</button>
+            <button class="btn-op" onclick="appendInput('*')">×</button>
+            <button class="btn-op" onclick="appendInput('PI')">π</button>
+            
+            <button onclick="appendInput('4')">4</button>
+            <button onclick="appendInput('5')">5</button>
+            <button onclick="appendInput('6')">6</button>
+            <button class="btn-op" onclick="appendInput('-')">-</button>
+            <button class="btn-op" onclick="appendInput('E')">e</button>
+            
+            <button onclick="appendInput('1')">1</button>
+            <button onclick="appendInput('2')">2</button>
+            <button onclick="appendInput('3')">3</button>
+            <button class="btn-op" onclick="appendInput('+')">+</button>
+            <button class="btn-equals" onclick="calculateStandard()" style="grid-row: span 2; height: 100%;">=</button>
+            
+            <button onclick="appendInput('0')" style="grid-column: span 2;">0</button>
+            <button onclick="appendInput('.')">.</button>
+            <button class="btn-op" onclick="appendInput('ans')">Ans</button>
+        </div>
+    </div>
+
+    <!-- 2. แผงเลือกโหมดพิเศษและวิธีทำทีละสเตปด้านข้าง -->
+    <div class="sidebar">
+        <h3>โหมดคำนวณพิเศษ</h3>
         <div class="form-group">
-            <label for="modeSelect">เลือกโหมดการคำนวณ:</label>คำนวณสถิติ
+            <label>เลือกโหมด:</label>
             <select id="modeSelect" onchange="switchMode()">
-                <option value="1">โหมด 1: คำนวณฟังก์ชันตรีโกณมิติ (sin, cos, tan)</option>
-                <option value="2">โหมด 2: คำนวณสมการกำลังสอง (ax² + bx + c = 0)</option>
-                <option value="3">โหมด 3: คำนวณสถิติเบื้องต้น (ค่าเฉลี่ย, ผลรวม)</option>
+                <option value="1">โหมด 1: ตรีโกณมิติ (sin/cos/tan)</option>
+                <option value="2">โหมด 2: สมการกำลังสอง (ax² + bx + c)</option>
+                <option value="3">โหมด 3: สถิติเบื้องต้น (Mean / Σx)</option>
             </select>
         </div>
 
-        <!-- ฟอร์มรับค่าตามโหมด -->
-        <div id="inputForm">
-            <!-- จะถูกเปลี่ยนด้วย JavaScript ตามโหมดที่เลือก -->
-        </div>
+        <div id="modeInputs"></div>
 
-        <button class="btn-calc" onclick="calculateMode()">คำนวณและแสดงสเตป</button>
+        <button class="btn-calc-mode" onclick="calculateMode()">คำนวณโหมดนี้</button>
 
-        <div id="mainResult" class="result-box">ผลลัพธ์: รอการคำนวณ</div>
-    </div>
-
-    <!-- แท็บแสดงวิธีทำและสเตปทีละขั้นตอน -->
-    <div class="steps-sidebar">
-        <h3>วิธีทำและลำดับขั้นตอน (Steps)</h3>
-        <div id="stepsBox" class="steps-content">กรุณาเลือกโหมด กรอกข้อมูล แล้วกดปุ่มคำนวณเพื่อดูขั้นตอนทีละสเตปที่นี่...</div>
+        <h3>วิธีทำและสเตปทีละขั้นตอน</h3>
+        <div id="stepsBox" class="steps-content">เลือกโหมดและกดคำนวณเพื่อดูสเตปที่นี่...</div>
     </div>
 </div>
 
 <script>
-    function switchMode() {
-        let mode = document.getElementById('modeSelect').value;
-        let formHTML = '';
+    // ส่วนเครื่องคิดเลขหลัก
+    let currentExpression = '0';
+    let lastAns = 0;
+    let isCalculated = false;
 
-        if (mode === '1') {
-            formHTML = `
-                <div class="form-group">
-                    <label>เลือกฟังก์ชัน:</label>
-                    <select id="trigFunc">
-                        <option value="sin">sin (ไซน์)</option>
-                        <option value="cos">cos (โคไซน์)</option>
-                        <option value="tan">tan (แทนเจนต์)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>ใส่ค่ามุม (หน่วยเป็นองศา):</label>
-                    <input type="number" id="trigAngle" placeholder="เช่น 30, 45, 90" value="30">
-                </div>
-            `;
-        } else if (mode === '2') {
-            formHTML = `
-                <div class="form-group"><label>ค่า a:</label><input type="number" id="quadA" value="1"></div>
-                <div class="form-group"><label>ค่า b:</label><input type="number" id="quadB" value="-3"></div>
-                <div class="form-group"><label>ค่า c:</label><input type="number" id="quadC" value="2"></div>
-            `;
-        } else if (mode === '3') {
-            formHTML = `
-                <div class="form-group">
-                    <label>ใส่ชุดตัวเลข (คั่นด้วยเครื่องหมายจุลภาค ,):</label>
-                    <input type="text" id="statData" placeholder="เช่น 10, 20, 30, 40, 50" value="10, 20, 30, 40, 50">
-                </div>
-            `;
+    function appendInput(val) {
+        if (isCalculated) {
+            if (!isNaN(val) || val === '(' || val.includes('(')) {
+                currentExpression = '';
+            }
+            isCalculated = false;
         }
-
-        document.getElementById('inputForm').innerHTML = formHTML;
-        document.getElementById('stepsBox').innerText = 'เปลี่ยนโหมดเรียบร้อย กรุณากรอกข้อมูลและกดคำนวณ';
-        document.getElementById('mainResult').innerText = 'ผลลัพธ์: รอการคำนวณ';
+        if (currentExpression === '0' && !isNaN(val)) {
+            currentExpression = val;
+        } else {
+            if (currentExpression === '0') currentExpression = '';
+            currentExpression += val;
+        }
+        document.getElementById('calcResult').innerText = currentExpression;
     }
 
-    // โหลดหน้าแรกให้แสดงโหมด 1 ทันที
-    window.onload = function() {
-        switchMode();
-    };
+    function clearCalc() {
+        currentExpression = '0';
+        document.getElementById('calcHistory').innerText = '0';
+        document.getElementById('calcResult').innerText = '0';
+    }
+
+    function deleteChar() {
+        if (currentExpression.length > 1) {
+            currentExpression = currentExpression.slice(0, -1);
+        } else {
+            currentExpression = '0';
+        }
+        document.getElementById('calcResult').innerText = currentExpression;
+    }
+
+    function calculateStandard() {
+        try {
+            let expr = currentExpression;
+            document.getElementById('calcHistory').innerText = expr;
+
+            let evalExpr = expr.replace(/PI/g, 'Math.PI')
+                               .replace(/E/g, 'Math.E')
+                               .replace(/ans/g, lastAns)
+                               .replace(/×/g, '*')
+                               .replace(/÷/g, '/')
+                               .replace(/\^/g, '**');
+
+            evalExpr = evalExpr.replace(/sin\(/g, 'Math.sin((Math.PI/180)*')
+                               .replace(/cos\(/g, 'Math.cos((Math.PI/180)*')
+                               .replace(/tan\(/g, 'Math.tan((Math.PI/180)*');
+
+            evalExpr = evalExpr.replace(/sqrt\(/g, 'Math.sqrt(')
+                               .replace(/log\(/g, 'Math.log10(')
+                               .replace(/ln\(/g, 'Math.log(');
+
+            let res = eval(evalExpr);
+            if (typeof res === 'number' && !Number.isInteger(res)) {
+                res = parseFloat(res.toFixed(8));
+            }
+            lastAns = res;
+            currentExpression = String(res);
+            isCalculated = true;
+            document.getElementById('calcResult').innerText = currentExpression;
+        } catch (e) {
+            document.getElementById('calcResult').innerText = 'Math Error';
+            isCalculated = true;
+        }
+    }
+
+    // ส่วนจัดการโหมดพิเศษด้านข้าง
+    function switchMode() {
+        let mode = document.getElementById('modeSelect').value;
+        let html = '';
+        if (mode === '1') {
+            html = `
+                <div class="form-group"><label>ฟังก์ชัน:</label>
+                <select id="m1Func"><option value="sin">sin</option><option value="cos">cos</option><option value="tan">tan</option></select></div>
+                <div class="form-group"><label>มุม (องศา):</label><input type="number" id="m1Val" value="45"></div>
+            `;
+        } else if (mode === '2') {
+            html = `
+                <div class="form-group"><label>ค่า a, b, c:</label>
+                <div style="display:flex; gap:4px;"><input type="number" id="m2a" value="1"><input type="number" id="m2b" value="-3"><input type="number" id="m2c" value="2"></div></div>
+            `;
+        } else if (mode === '3') {
+            html = `
+                <div class="form-group"><label>ข้อมูล (คั่นด้วย ,):</label><input type="text" id="m3Val" value="10, 20, 30, 40"></div>
+            `;
+        }
+        document.getElementById('modeInputs').innerHTML = html;
+    }
+
+    window.onload = function() { switchMode(); };
 
     function calculateMode() {
         let mode = document.getElementById('modeSelect').value;
         let steps = "";
-        let finalRes = "";
-
         if (mode === '1') {
-            let func = document.getElementById('trigFunc').value;
-            let angle = parseFloat(document.getElementById('trigAngle').value);
-
-            if (isNaN(angle)) {
-                alert('กรุณากรอกตัวเลขมุมให้ถูกต้อง');
-                return;
-            }
-
-            let rad = angle * (Math.PI / 180);
-            let res = 0;
-            let funcName = '';
-
-            if (func === 'sin') { res = Math.sin(rad); funcName = 'sin'; }
-            else if (func === 'cos') { res = Math.cos(rad); funcName = 'cos'; }
-            else if (func === 'tan') { res = Math.tan(rad); funcName = 'tan'; }
-
-            res = parseFloat(res.toFixed(6));
-
-            steps = `=== โหมด 1: คำนวณฟังก์ชันตรีโกณมิติ ===\n\n`;
-            steps += `1. กำหนดฟังก์ชัน: ${funcName}(${angle}°)\n`;
-            steps += `2. แปลงมุมองศาเป็นเรเดียน:\n   Rad = ${angle} × (π / 180)\n   Rad = ${rad.toFixed(4)}\n`;
-            steps += `3. คำนวณค่าทางคณิตศาสตร์:\n   = ${res}`;
-            
-            finalRes = res;
-
+            let f = document.getElementById('m1Func').value;
+            let ang = parseFloat(document.getElementById('m1Val').value);
+            let rad = ang * (Math.PI / 180);
+            let r = (f === 'sin') ? Math.sin(rad) : (f === 'cos') ? Math.cos(rad) : Math.tan(rad);
+            steps = `[โหมด 1: ตรีโกณมิติ]\n- คำนวณ ${f}(${ang}°)\n- แปลงเป็นเรเดียน = ${rad.toFixed(4)}\n- ผลลัพธ์ = ${r.toFixed(4)}`;
         } else if (mode === '2') {
-            let a = parseFloat(document.getElementById('quadA').value);
-            let b = parseFloat(document.getElementById('quadB').value);
-            let c = parseFloat(document.getElementById('quadC').value);
-
-            if (a === 0) {
-                alert('ค่า a ต้องไม่เท่ากับ 0 สำหรับสมการกำลังสอง');
-                return;
-            }
-
-            let discriminant = (b ** 2) - (4 * a * c);
-            steps = `=== โหมด 2: คำนวณสมการกำลังสอง ===\n`;
-            steps += `สมการ: ${a}x² + (${b})x + (${c}) = 0\n\n`;
-            steps += `1. คำนวณค่า Discriminant (Δ):\n   Δ = b² - 4ac\n   Δ = (${b})² - 4(${a})(${c})\n   Δ = ${discriminant}\n\n`;
-
-            if (discriminant > 0) {
-                let x1 = (-b + Math.sqrt(discriminant)) / (2 * a);
-                let x2 = (-b - Math.sqrt(discriminant)) / (2 * a);
-                steps += `2. ค่า Δ > 0 มี 2 คำตอบจริง:\n   x1 = ${x1.toFixed(4)}\n   x2 = ${x2.toFixed(4)}`;
-                finalRes = `x1 = ${x1.toFixed(2)}, x2 = ${x2.toFixed(2)}`;
-            } else if (discriminant === 0) {
-                let x = -b / (2 * a);
-                steps += `2. ค่า Δ = 0 มี 1 คำตอบ:\n   x = ${x.toFixed(4)}`;
-                finalRes = `x = ${x.toFixed(2)}`;
+            let a = parseFloat(document.getElementById('m2a').value);
+            let b = parseFloat(document.getElementById('m2b').value);
+            let c = parseFloat(document.getElementById('m2c').value);
+            let d = (b*b) - (4*a*c);
+            steps = `[โหมด 2: สมการกำลังสอง]\n- ค่า Discriminant (Δ) = ${d}\n`;
+            if (d >= 0) {
+                let x1 = (-b + Math.sqrt(d)) / (2*a);
+                let x2 = (-b - Math.sqrt(d)) / (2*a);
+                steps += `- x1 = ${x1.toFixed(2)}, x2 = ${x2.toFixed(2)}`;
             } else {
-                steps += `2. ค่า Δ < 0 ไม่มีคำตอบที่เป็นจำนวนจริง`;
-                finalRes = `No Real Roots`;
+                steps += `- ไม่มีคำตอบที่เป็นจำนวนจริง`;
             }
-
         } else if (mode === '3') {
-            let rawData = document.getElementById('statData').value;
-            let arr = rawData.split(',').map(item => parseFloat(item.trim())).filter(num => !isNaN(num));
-
-            if (arr.length === 0) {
-                alert('กรุณากรอกชุดข้อมูลตัวเลขให้ถูกต้อง');
-                return;
-            }
-
-            let n = arr.length;
-            let sum = arr.reduce((acc, val) => acc + val, 0);
-            let mean = sum / n;
-
-            steps = `=== โหมด 3: คำนวณสถิติเบื้องต้น ===\n`;
-            steps += `ชุดข้อมูล: [${arr.join(', ')}]\n\n`;
-            steps += `1. จำนวนข้อมูลทั้งหมด (n) = ${n}\n`;
-            steps += `2. ผลรวมทั้งหมด (Σx) = ${sum}\n`;
-            steps += `3. คำนวณค่าเฉลี่ย (Mean):\n   x̄ = Σx / n\n   x̄ = ${sum} / ${n}\n   x̄ = ${mean.toFixed(4)}`;
-
-            finalRes = `Mean (x̄) = ${mean.toFixed(2)}`;
+            let arr = document.getElementById('m3Val').value.split(',').map(Number).filter(n=>!isNaN(n));
+            let sum = arr.reduce((a,b)=>a+b, 0);
+            let mean = sum / arr.length;
+            steps = `[โหมด 3: สถิติ]\n- จำนวน (n) = ${arr.length}\n- ผลรวม (Σx) = ${sum}\n- ค่าเฉลี่ย (Mean) = ${mean.toFixed(2)}`;
         }
-
-        document.getElementById('mainResult').innerText = "ผลลัพธ์: " + finalRes;
         document.getElementById('stepsBox').innerText = steps;
     }
 </script>
