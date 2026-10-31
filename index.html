@@ -3,121 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Casio Calculator Step-by-Step</title>
+    <title>Casio fx-991 Scientific Calculator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #222;
+            background-color: #3b3b3b;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
         }
         .calculator {
-            background: #333;
+            background: #202020;
             padding: 20px;
             border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            width: 300px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            width: 360px;
+            border: 2px solid #444;
         }
         .brand {
-            color: #aaa;
-            font-size: 12px;
-            margin-bottom: 5px;
+            color: #d4af37;
+            font-size: 13px;
             font-weight: bold;
+            margin-bottom: 4px;
             letter-spacing: 1px;
         }
+        .model {
+            color: #fff;
+            font-size: 11px;
+            margin-bottom: 10px;
+        }
         .display {
-            background: #9ead86;
-            padding: 15px;
-            border-radius: 6px;
+            background: #c8d6af;
+            padding: 12px;
+            border-radius: 4px;
             text-align: right;
-            font-size: 26px;
-            font-weight: bold;
+            font-family: 'Courier New', Courier, monospace;
             margin-bottom: 15px;
-            color: #000;
-            min-height: 35px;
-            word-break: break-all;
             border: 2px inset #666;
+            min-height: 45px;
+        }
+        .history {
+            font-size: 12px;
+            color: #444;
+            overflow-x: auto;
+            white-space: nowrap;
+            height: 16px;
+        }
+        .result {
+            font-size: 22px;
+            font-weight: bold;
+            color: #000;
+            overflow-x: auto;
+            white-space: nowrap;
         }
         .buttons {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
         }
         button {
-            padding: 15px;
-            font-size: 18px;
+            padding: 10px 4px;
+            font-size: 13px;
             cursor: pointer;
             border: none;
-            border-radius: 6px;
+            border-radius: 4px;
             background: #e0e0e0;
             transition: 0.1s;
             font-weight: bold;
+            color: #111;
         }
-        button:active { background: #ccc; }
-        .operator { background: #ff9800; color: white; }
-        .action { background: #f44336; color: white; }
-        .equals { background: #4CAF50; color: white; grid-column: span 2; }
+        button:active { background: #b0b0b0; }
+        .btn-shift { background: #d4af37; color: #fff; }
+        .btn-alpha { background: #cc3333; color: #fff; }
+        .btn-mode { background: #dcdcdc; font-size: 11px; }
+        .btn-op { background: #555555; color: #fff; }
+        .btn-action { background: #b85c37; color: #fff; }
+        .btn-equals { background: #2e7d32; color: #fff; }
     </style>
 </head>
 <body>
 
 <div class="calculator">
-    <div class="brand">CASIO STEP-BY-STEP</div>
-    <div id="display" class="display">0</div>
+    <div class="brand">CASIO</div>
+    <div class="model">fx-991ES Plus (Web Simulator)</div>
+    
+    <div class="display">
+        <div id="history" class="history"></div>
+        <div id="result" class="result">0</div>
+    </div>
+    
     <div class="buttons">
-        <button class="action" onclick="clearDisplay()">AC</button>
-        <button class="operator" onclick="appendValue('/')">÷</button>
-        <button class="operator" onclick="appendValue('*')">×</button>
-        <button class="operator" onclick="appendValue('-')">-</button>
+        <!--แถวที่ 1-->
+        <button class="btn-shift" onclick="alert('Shift Mode')">SHIFT</button>
+        <button class="btn-alpha" onclick="alert('Alpha Mode')">ALPHA</button>
+        <button class="btn-mode" onclick="appendValue('Math')">MODE</button>
+        <button class="btn-action" onclick="clearAll()">AC</button>
+        <button class="btn-action" onclick="deleteChar()">DEL</button>
         
+        <!--แถวที่ 2-->
+        <button class="btn-op" onclick="appendFunc('Math.sin(')">sin</button>
+        <button class="btn-op" onclick="appendFunc('Math.cos(')">cos</button>
+        <button class="btn-op" onclick="appendFunc('Math.tan(')">tan</button>
+        <button class="btn-op" onclick="appendValue('^')">x^y</button>
+        <button class="btn-op" onclick="appendValue('Math.sqrt(')">√</button>
+        
+        <!--แถวที่ 3-->
+        <button class="btn-op" onclick="appendValue('Math.log10(')">log</button>
+        <button class="btn-op" onclick="appendValue('Math.log(')">ln</button>
+        <button class="btn-op" onclick="appendValue('(')">(</button>
+        <button class="btn-op" onclick="appendValue(')')">)</button>
+        <button class="btn-op" onclick="appendValue('/')">÷</button>
+        
+        <!--แถวที่ 4-->
         <button onclick="appendValue('7')">7</button>
         <button onclick="appendValue('8')">8</button>
         <button onclick="appendValue('9')">9</button>
-        <button class="operator" onclick="appendValue('+')">+</button>
+        <button class="btn-op" onclick="appendValue('*')">×</button>
+        <button class="btn-op" onclick="appendValue('Math.PI')">π</button>
         
+        <!--แถวที่ 5-->
         <button onclick="appendValue('4')">4</button>
         <button onclick="appendValue('5')">5</button>
         <button onclick="appendValue('6')">6</button>
-        <button class="equals" onclick="calculate()">=</button>
+        <button class="btn-op" onclick="appendValue('-')">-</button>
+        <button class="btn-op" onclick="appendValue('Math.E')">e</button>
         
+        <!--แถวที่ 6-->
         <button onclick="appendValue('1')">1</button>
         <button onclick="appendValue('2')">2</button>
         <button onclick="appendValue('3')">3</button>
+        <button class="btn-op" onclick="appendValue('+')">+</button>
+        <button class="btn-equals" onclick="calculate()" style="grid-row: span 2; height: 100%;">=</button>
         
+        <!--แถวที่ 7-->
         <button onclick="appendValue('0')" style="grid-column: span 2;">0</button>
         <button onclick="appendValue('.')">.</button>
+        <button class="btn-op" onclick="appendValue('ans')">Ans</button>
     </div>
 </div>
 
 <script>
-    let display = document.getElementById('display');
-    let resetOnNext = false;
-    
+    let currentInput = '0';
+    let historyInput = '';
+    let lastAns = 0;
+
+    function updateDisplay() {
+        document.getElementById('result').innerText = currentInput;
+        document.getElementById('history').innerText = historyInput;
+    }
+
     function appendValue(val) {
-        if (display.innerText === '0' || resetOnNext) {
-            display.innerText = val;
-            resetOnNext = false;
+        if (val === 'ans') val = lastAns;
+        if (currentInput === '0' && typeof val === 'string' && !isNaN(val)) {
+            currentInput = val;
         } else {
-            display.innerText += val;
+            if (currentInput === '0') currentInput = '';
+            currentInput += val;
         }
+        updateDisplay();
     }
-    
-    function clearDisplay() {
-        display.innerText = '0';
+
+    function appendFunc(func) {
+        if (currentInput === '0') currentInput = '';
+        currentInput += func;
+        updateDisplay();
     }
-    
+
+    function clearAll() {
+        currentInput = '0';
+        historyInput = '';
+        updateDisplay();
+    }
+
+    function deleteChar() {
+        if (currentInput.length > 1) {
+            currentInput = currentInput.slice(0, -1);
+        } else {
+            currentInput = '0';
+        }
+        updateDisplay();
+    }
+
     function calculate() {
         try {
-            let expression = display.innerText.replace(/×/g, '*').replace(/÷/g, '/');
-            let result = eval(expression);
-            display.innerText = result;
-            resetOnNext = true;
+            historyInput = currentInput;
+            // แปลงสัญลักษณ์ให้ JavaScript คำนวณได้
+            let exp = currentInput.replace(/×/g, '*').replace(/÷/g, '/').replace(/\^/g, '**');
+            let res = eval(exp);
+            lastAns = res;
+            currentInput = String(res);
+            updateDisplay();
         } catch (error) {
-            display.innerText = 'Error';
-            resetOnNext = true;
+            currentInput = 'Syntax Error';
+            updateDisplay();
         }
     }
 </script>
