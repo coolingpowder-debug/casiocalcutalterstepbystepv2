@@ -1,53 +1,126 @@
-from flask import Flask, render_template_string
-
-app = Flask(__name__)
-
-# หน้าตาเว็บเครื่องคิดเลขแบบง่ายด้วย Python/Flask
-HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>Casio Calculator Python</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casio Calculator Step-by-Step</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #e0e0e0; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .calculator { background: #222; padding: 20px; border-radius: 10px; width: 300px; color: white; text-align: center; }
-        h2 { font-size: 16px; margin-bottom: 10px; color: #ff9800; }
-        input { width: 90%; padding: 10px; font-size: 18px; margin-bottom: 10px; text-align: right; }
-        button { padding: 10px 15px; font-size: 16px; margin: 5px; cursor: pointer; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .calculator {
+            background: #333;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            width: 300px;
+        }
+        .brand {
+            color: #aaa;
+            font-size: 12px;
+            margin-bottom: 5px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .display {
+            background: #9ead86;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: right;
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #000;
+            min-height: 35px;
+            word-break: break-all;
+            border: 2px inset #666;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+        button {
+            padding: 15px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            border-radius: 6px;
+            background: #e0e0e0;
+            transition: 0.1s;
+            font-weight: bold;
+        }
+        button:active { background: #ccc; }
+        .operator { background: #ff9800; color: white; }
+        .action { background: #f44336; color: white; }
+        .equals { background: #4CAF50; color: white; grid-column: span 2; }
     </style>
 </head>
 <body>
-    <div class="calculator">
-        <h2>Casio Calc (Python Backend)</h2>
-        <form method="POST">
-            <input type="text" name="expression" value="{{ expression }}" placeholder="เช่น 5+5">
-            <br>
-            <button type="submit">คำนวณ</button>
-        </form>
-        <h3>ผลลัพธ์: {{ result }}</h3>
+
+<div class="calculator">
+    <div class="brand">CASIO STEP-BY-STEP</div>
+    <div id="display" class="display">0</div>
+    <div class="buttons">
+        <button class="action" onclick="clearDisplay()">AC</button>
+        <button class="operator" onclick="appendValue('/')">÷</button>
+        <button class="operator" onclick="appendValue('*')">×</button>
+        <button class="operator" onclick="appendValue('-')">-</button>
+        
+        <button onclick="appendValue('7')">7</button>
+        <button onclick="appendValue('8')">8</button>
+        <button onclick="appendValue('9')">9</button>
+        <button class="operator" onclick="appendValue('+')">+</button>
+        
+        <button onclick="appendValue('4')">4</button>
+        <button onclick="appendValue('5')">5</button>
+        <button onclick="appendValue('6')">6</button>
+        <button class="equals" onclick="calculate()">=</button>
+        
+        <button onclick="appendValue('1')">1</button>
+        <button onclick="appendValue('2')">2</button>
+        <button onclick="appendValue('3')">3</button>
+        
+        <button onclick="appendValue('0')" style="grid-column: span 2;">0</button>
+        <button onclick="appendValue('.')">.</button>
     </div>
+</div>
+
+<script>
+    let display = document.getElementById('display');
+    let resetOnNext = false;
+    
+    function appendValue(val) {
+        if (display.innerText === '0' || resetOnNext) {
+            display.innerText = val;
+            resetOnNext = false;
+        } else {
+            display.innerText += val;
+        }
+    }
+    
+    function clearDisplay() {
+        display.innerText = '0';
+    }
+    
+    function calculate() {
+        try {
+            let expression = display.innerText.replace(/×/g, '*').replace(/÷/g, '/');
+            let result = eval(expression);
+            display.innerText = result;
+            resetOnNext = true;
+        } catch (error) {
+            display.innerText = 'Error';
+            resetOnNext = true;
+        }
+    }
+</script>
+
 </body>
 </html>
-"""
-
-@app.route('/', methods=['GET', 'POST'])
-def home():
-    from flask import request
-    expression = ""
-    result = "0"
-    if request.method == 'POST':
-        expression = request.form.get('expression', '')
-        try:
-            # ป้องกันความปลอดภัยเบื้องต้น อนุญาตเฉพาะตัวเลขและเครื่องคำนวณพื้นฐาน
-            allowed_chars = set("0123456789+-*/.() ")
-            if all(c in allowed_chars for c in expression):
-                result = str(eval(expression))
-            else:
-                result = "Error (Invalid chars)"
-        except Exception:
-            result = "Error"
-    return render_template_string(HTML_TEMPLATE, expression=expression, result=result)
-
-if __name__ == '__main__':
-    app.run(debug=True)
